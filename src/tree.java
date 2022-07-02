@@ -279,7 +279,7 @@ public class tree
         // levelOrderZigZag(root);
         //levelOrderLinewise2(root);
         //levelOrderLinewise3(root);
-        //removeLeaves(root);
+        removeLeaves(root);
         //display(root);
         // your code goes here
     }
