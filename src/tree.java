@@ -2,7 +2,6 @@
 
 import java.util.*;
 import java.lang.*;
-import java.io.*;
 
 /* Name of the class has to be "Main" only if the class is public. */
 public class tree
@@ -90,6 +89,7 @@ public class tree
         }
         System.out.println("Post"+node.data);
     }
+    //It will print all the node linearly
     public static void levelOrder(a node)
     {
         Queue<a> q=new ArrayDeque<>();
@@ -106,6 +106,7 @@ public class tree
         }
         System.out.println(".");
     }
+    //It will print all the nodes in same level in a same line.
     public static void levelOrderLinewise(a node)
     {
         Queue<a> mq=new ArrayDeque<>();
@@ -225,6 +226,14 @@ public class tree
 
     }
 
+    // for(int i=node.child.size()-1;i>=0;i--)
+    //{
+    //    a p=node.child.get(i);
+    //if(p.child.size()==0)
+    //        node.child.remove(p);
+    //}
+
+
     public static void removeLeaves(a node)
     {
         for(int i=node.child.size()-1;i>=0;i--)
@@ -238,6 +247,165 @@ public class tree
         {
             removeLeaves(children);
         }
+//if we perform the operation after calling then it will remove the future node
+// which will make it to remove the past node also
+
+//        for(int i=node.child.size()-1;i>=0;i--)
+//        {
+//            a p=node.child.get(i);
+//            if(p.child.size()==0)
+//                node.child.remove(p);
+//        }
+    }
+
+    public static void Linearize(a node)
+    {
+        for(a children:node.child)
+        {
+            //the faith in this recursion is that it will return a
+            // linear layer with children node
+            Linearize(children);
+        }
+
+        while(node.child.size()>1)
+        {
+            // to remove the last child of the parent node.
+            a lc=node.child.remove(node.child.size()-1);
+            // to remove the second last child of the parent node.
+            a sl=node.child.get(node.child.size()-1);
+            a tail=getTail(sl);
+            tail.child.add(lc);
+        }
+    }
+
+      public static a getTail(a node)
+      {
+          while(node.child.size()==1)
+          {
+              node=node.child.get(0);
+          }
+          return node;
+      }
+
+      public static boolean find(a node,int data)
+      {
+          if(node.data==data)
+          {
+              return true;
+          }
+          for(a children: node.child)
+          {
+              boolean fic=find(children,data);
+              if(fic)
+              {
+                  return true;
+              }
+          }
+          return false;
+      }
+      public static ArrayList<Integer> nodetorootpath(a node,int data)
+      {
+          if(node.data==data)
+          {
+              ArrayList<Integer> arr=new ArrayList<>();
+              arr.add(node.data);
+              return arr;
+          }
+          for(a children:node.child)
+          {
+             ArrayList<Integer> arr=nodetorootpath(children,data);
+             if(arr.size()>0)
+             {
+                 arr.add(node.data);
+                 return arr;
+             }
+          }
+          return new ArrayList<>();
+      }
+      public static void lowestCommonAncestor(a node,int data1,int data2)
+      {
+          ArrayList<Integer> l1=nodetorootpath(node,data1);
+          ArrayList<Integer> l2=nodetorootpath(node,data2);
+          int i=l1.size()-1;
+          int j=l2.size()-1;
+          while(i>=0 && j>=0 && l1.get(i)==l2.get(j))
+          {
+              i--;
+              j--;
+          }
+          i++;
+          System.out.println(l1.get(i));
+      }
+      public static void DistanceBetweenEdges(a node,int data1,int data2)
+      {
+          ArrayList<Integer> l1=nodetorootpath(node,data1);
+          ArrayList<Integer> l2=nodetorootpath(node,data2);
+          int i=l1.size()-1;
+          int j=l2.size()-1;
+          while(i>=0 && j>=0 && l1.get(i)==l2.get(j))
+          {
+              i--;
+              j--;
+          }
+          i++;
+          j++;
+          System.out.println(i+j);
+
+      }
+      public static boolean SimilarShape(a node1,a node2)
+      {
+          if(node1.child.size()!=node2.child.size())
+          {
+              return false;
+          }
+          for(int i=0;i<node1.child.size();i++)
+          {
+              a p1=node1.child.get(i);
+              a p2=node2.child.get(i);
+              if(SimilarShape(p1,p2)==false)
+                  return false;
+          }
+          return true;
+      }
+
+    public static boolean MirrorShape(a node1,a node2)
+    {
+        if(node1.child.size()!=node2.child.size())
+        {
+            return false;
+        }
+        for(int i=0;i<node1.child.size();i++)
+        {
+            int j=node1.child.size()-1-i;
+            a p1=node1.child.get(i);
+            a p2=node2.child.get(j);
+            if(MirrorShape(p1,p2)==false)
+                return false;
+        }
+        return true;
+    }
+    static int ceil;
+    static int floor;
+
+
+    public static void ceilandfloor(a node,int data)
+    {
+        if(node.data<data)
+        {
+            if(floor<node.data)
+                floor=node.data;
+        }
+        else if(node.data>data)
+        {
+            if(ceil>node.data)
+                ceil=node.data;
+        }
+
+            for(a children: node.child)
+            {
+                ceilandfloor(children,data);
+            }
+
     }
 
 
@@ -246,7 +414,7 @@ public class tree
     {
         a root=null;
         int arr[]={10,20,50,-1,60,-1,-1,30,140,-1,80,110,-1,120,-1,-1,90,-1,-1,40,100,-1,-1,-1};
-        Stack <a> st=new Stack<>();
+        Stack<a> st=new Stack<>();
         for(int i=0;i<arr.length;i++)
         {
 
@@ -280,7 +448,21 @@ public class tree
         //levelOrderLinewise2(root);
         //levelOrderLinewise3(root);
         removeLeaves(root);
+        display(root);
+       // Linearize(root);
         //display(root);
+        //System.out.println(find(root,70));
+       // ArrayList<Integer> arr1=nodetorootpath(root,80);
+       // for(int data:arr1)
+      //   {
+      //     System.out.println(data);
+      // }
+       // lowestCommonAncestor(root,80,110);
+        //DistanceBetweenEdges(root,80,110);
+        //ceil=Integer.MAX_VALUE;
+       // floor=Integer.MIN_VALUE;
+        //ceilandfloor(root,65);
+       // System.out.println(floor+" "+ceil);
         // your code goes here
     }
 }
